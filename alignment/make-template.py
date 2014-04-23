@@ -40,3 +40,4 @@ while True:
             col, row = map(int, ji.split("-"))
             ws.write(row+2, col+2, "S", sstyle)
 wb.save(sys.argv[1])
+map(file.close, files)
