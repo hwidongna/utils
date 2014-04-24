@@ -1,5 +1,5 @@
 import sys, xlrd, xlwt, math, arial10
-from os import path
+from os import path, linesep
 
 if len(sys.argv) < 3:
     sys.stderr.write("usage: python split.py output input+"+linesep)
@@ -19,14 +19,14 @@ for wb in map(xlrd.open_workbook, sys.argv[2:]):
         wsout.set_vert_split_pos(1)
         for row in range(ws.nrows):
             for col in range(ws.ncols):
-                c = ws.cell(row,col)
+                c = ws.cell(row,col).value
                 if row == 0 and col > 0:
                     wsout.col(col).width = \
-                            int(math.ceil(arial10.fitwidth(c.value.encode("utf-8"))))
-                if c.value == 'S':
-                    wsout.write(row,col, c.value, sstyle)
-                elif c.value == 'P':
-                    wsout.write(row,col, c.value, pstyle)
+                            int(math.ceil(arial10.fitwidth(c.encode("utf-8"))))
+                if c == 'S':
+                    wsout.write(row,col, c, sstyle)
+                elif c == 'P':
+                    wsout.write(row,col, c, pstyle)
                 else:
-                    wsout.write(row,col, c.value)
+                    wsout.write(row,col, c)
 out.save(sys.argv[1])
