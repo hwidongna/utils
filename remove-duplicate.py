@@ -2,7 +2,7 @@ import sys
 from os import linesep
 
 s = set()
-for filename in sys.argv[1:]):
+for filename in sys.argv[1:]:
 	for line in open(filename):
 		s.add(line.strip())
 

@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 from os import linesep
 import xlwt, arial10, math
