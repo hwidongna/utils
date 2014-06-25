@@ -4,7 +4,7 @@ from os import linesep
 import xlwt, arial10, math
 
 if len(sys.argv) < 2:
-    sys.stderr.write("usage: python make-template.py output < csv"+linesep)
+    sys.stderr.write("usage: python csv2xls.py output < csv"+linesep)
     sys.exit(1)
 
 wb = xlwt.Workbook(encoding="utf-8")

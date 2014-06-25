@@ -11,8 +11,10 @@ if len(sys.argv) < 2:
 segfile = None
 if len(sys.argv) > 2:
 	segfile = open(sys.argv[2])
+	sys.stderr.write("using seg: "+sys.argv[2]+linesep)
 
-wb = xlwt.Workbook(encoding="utf-8")
+enc = "utf-8"
+wb = xlwt.Workbook(encoding=enc)
 pstyle = xlwt.easyxf("font: color green; align: horiz center")
 sstyle = xlwt.easyxf("font: color blue; align: horiz center")
 
@@ -22,15 +24,17 @@ fstart = 2		# 0 and 1 is reserved for target words and NULL
 estart = 2		# 0 and 1 is reserved for source words and NULL
 if segfile:
 	estart = 3	# 2 is reserverd for word boundary information
-SOURCE=re.compile("^<source>(.*)</source>$")
-TRANSLATION=re.compile("^<translation>(.*)</translation>$")
+SEGID = re.compile("^<seg id=(.*)>$")
+SOURCE = re.compile("^<source>(.*)</source>$")
+TRANSLATION = re.compile("^<translation>(.*)</translation>$")
 for line in imap(str.strip, sys.stdin):
-	if line.startswith("<seg"):
+	if SEGID.match(line):
 		k += 1
 		ws = wb.add_sheet(str(k), cell_overwrite_ok=True)
 		ws.set_panes_frozen(True) # frozen headings instead of split panes
 		ws.set_vert_split_pos(fstart-1)		    
 		ws.set_horz_split_pos(estart-1)
+		ws.write(0,0, "ID="+SEGID.match(line).group(1))
 		ws.write(0, fstart-1, "NULL")
 		ws.write(estart-1, 0, "NULL")
 		ws.col(fstart-1).width = int(math.ceil(arial10.fitwidth("NULL")))
@@ -51,18 +55,21 @@ for line in imap(str.strip, sys.stdin):
 					break
 			buf = []
 			for word in seg.split():
-				for i, uch in enumerate(unicode(word, "utf-8")):
+				for i, uch in enumerate(unicode(word, enc)):
 					if i == 0:
 						buf.append("B")
 					else:
 						buf.append("I")
+			for i, token in enumerate(source.split()):
+				buf = buf[:i+1] + buf[i+len(unicode(token, enc)):]
 			if len(buf) != len(source.split()):
 				sys.stderr.write("Mismatch" + linesep)
-				sys.stderr.write(seg + linesep)
-				sys.stderr.write(source + linesep)
+				sys.stderr.write(seg.replace(" ","") + linesep)
+				sys.stderr.write(source.replace(" ","") + linesep)
 				sys.stderr.write(" ".join(buf) + linesep)
-				for fj, bi in zip(source.split(),buf):
-					sys.stderr.write(fj+ "/" + bi + linesep)
+#				for fj, bi in zip(source.split(),buf):
+#					sys.stderr.write(fj+ "/" + bi + linesep)
+				continue
 			for j, fj in enumerate(buf, fstart):
 				ws.write(1, j, fj)						
 	elif TRANSLATION.match(line):
