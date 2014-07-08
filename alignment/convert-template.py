@@ -4,7 +4,7 @@ from os import linesep
 import xlrd
 
 if len(sys.argv) < 5:
-    sys.stderr.write("usage: python convert-template.py xls source target sure possible [source word boundary]"+linesep)
+    sys.stderr.write("usage: python convert-template.py xls source target sure possible [source word boundary] > ids"+linesep)
     sys.exit(1)
 
 wb = xlrd.open_workbook(sys.argv[1])
@@ -19,6 +19,7 @@ estart = 2		# 0 and 1 is reserved for source words and NULL
 if fwb:
 	estart = 3	# 2 is reserverd for word boundary information
 for ws in wb.sheets():
+    sys.stdout.write(ws.cell(0,0).value.encode("utf-8").replace("ID=","")+linesep)
     f.write(" ".join([ws.cell(0,j).value.encode("utf-8") \
             for j in range(fstart,ws.ncols)])+linesep)
     e.write(" ".join([ws.cell(i,0).value.encode("utf-8") \
