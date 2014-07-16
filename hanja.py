@@ -73,6 +73,6 @@ if __name__=="__main__":
             if HANJA_START <= ch <= HANJA_END:
                 sys.stderr.write(ch.encode("utf-8"))
             else:
-                sys.stderr.write(" ")
+                sys.stderr.write(".")
         sys.stderr.write(linesep)
         sys.stdout.write(line)
