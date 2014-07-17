@@ -25,6 +25,8 @@ for wb in map(xlrd.open_workbook, sys.argv[2:]):
         for row in range(ws.nrows):
             for col in range(ws.ncols):
                 c = ws.cell(row,col).value
+                if type(c) != type(u''):
+                    c = unicode("{0}".format(c), "utf-8")
                 if row == 0 and col == 0 and not c:
                     wsout.write(0,0, u"ID="+i.strip(), istyle)
                     continue

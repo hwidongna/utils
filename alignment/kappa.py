@@ -16,18 +16,18 @@ if wb1.nsheets != wb2.nsheets:
     
 tt, tf, ft, ff = 0, 0, 0, 0
 for (ws1, ws2) in zip(wb1.sheets(), wb2.sheets()):
-    if ws1.cell(0,0).value != ws2.cell(0,0).value:
-        sys.stderr.write("Different ID: {0} != {1}".format(
-                            ws1.cell(0,0).value, ws2.cell(0,0).value)+linesep)
-        sys.exit(1)
+    if ws1.name != ws2.name:
+        sys.stderr.write("Different sheet name: {0} != {1}".format(
+            ws1.name, ws2.name) + linesep)
+        continue
     if ws1.ncols != ws2.ncols:
-        sys.stderr.write("Different # of source words: {0} != {1}".format(
-                            ws1.ncols, ws2.ncols)+linesep)
-        sys.exit(1)
+        sys.stderr.write("Different # of source words: {0} != {1} @ {2}".format(
+                            ws1.ncols, ws2.ncols, ws1.name)+linesep)
+        continue
     if ws1.nrows != ws2.nrows:
-        sys.stderr.write("Different # of target words: {0} != {1}".format(
-                            ws1.nrows, ws2.nrows)+linesep)
-        sys.exit(1)
+        sys.stderr.write("Different # of target words: {0} != {1} @ {2}".format(
+                            ws1.nrows, ws2.nrows, ws1.name)+linesep)
+        continue
     # True if (target[row],source[col]) is aligned
     # False if (NULL,source[col]) or (target[row],NULL)
     for row in range(1,ws1.nrows):

@@ -13,19 +13,28 @@ istyle = xlwt.easyxf("font: color red; align: horiz center")
 wb1, wb2 = map(xlrd.open_workbook, sys.argv[2:])
 
 if wb1.nsheets != wb2.nsheets:
-    sys.stderr.write("different # of sheets: %d != %d" % (wb1.nsheets , wb2.nsheets) + linesep)
-    sys.exit(1)
+    sys.stderr.write("Different total # of sentences: {0} != {1}".format(
+                        wb1.nsheets, wb2.nsheets)+linesep)
+    sys.exit(1)    
 
 out = xlwt.Workbook(encoding=wb1.encoding)
 for (ws1, ws2) in zip(wb1.sheets(), wb2.sheets()):
-    if ws1.name != ws2.name:
-        sys.stderr.write("different sheet name: %s != %s" % (ws1.name, ws2.name) + linesep)
+    id1 = ws1.cell(0,0).value
+    id2 = ws2.cell(0,0).value
+    if id1 != id2:
+        sys.stderr.write("Different ID: {0} != {1}".format(
+                            id1, id2)+linesep)
         continue
-    if ws1.nrows != ws2.nrows:
-        sys.stderr.write("different # rows: %d != %d" % (ws1.nrows, ws2.nrows) + linesep)
+    if ws1.name != ws2.name:
+        sys.stderr.write("Different sheet name: %s != %s" % (ws1.name, ws2.name) + linesep)
         continue
     if ws1.ncols != ws2.ncols:
-        sys.stderr.write("different # cols: %d != %d" % (ws1.ncols, ws2.ncols) + linesep)
+        sys.stderr.write("Different # of source words: {0} != {1} @ {2}".format(
+                            ws1.ncols, ws2.ncols, ws1.name)+linesep)
+        continue
+    if ws1.nrows != ws2.nrows:
+        sys.stderr.write("Different # of target words: {0} != {1} @ {2}".format(
+                            ws1.nrows, ws2.nrows, ws1.name)+linesep)
         continue
     wsout = out.add_sheet(ws1.name)
     

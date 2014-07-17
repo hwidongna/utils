@@ -18,11 +18,18 @@ fstart = 2		# 0 and 1 is reserved for target words and NULL
 estart = 2		# 0 and 1 is reserved for source words and NULL
 if fwb:
 	estart = 3	# 2 is reserverd for word boundary information
+
+def cell2str(cell):
+    c = cell.value
+    if type(c) != type(u''):
+        c = unicode("{0}".format(c), "utf-8")
+    return c.encode("utf-8")
+
 for ws in wb.sheets():
-    f.write(" ".join([ws.cell(0,j).value.encode("utf-8") \
-            for j in range(fstart,ws.ncols)])+linesep)
-    e.write(" ".join([ws.cell(i,0).value.encode("utf-8") \
-            for i in range(estart,ws.nrows)])+linesep)
+    f.write(" ".join(map(cell2str, [ws.cell(0,j) \
+            for j in range(fstart,ws.ncols)]))+linesep)
+    e.write(" ".join(map(cell2str, [ws.cell(i,0) \
+            for i in range(estart,ws.nrows)]))+linesep)
     sure, possible = [], []
     for i in range(estart, ws.nrows):
         for j in range(fstart, ws.ncols):
@@ -34,8 +41,8 @@ for ws in wb.sheets():
     s.write(" ".join(sure)+linesep)
     p.write(" ".join(possible)+linesep)
     if fwb:
-   	    fwb.write(" ".join([ws.cell(1,j).value.encode("utf-8") \
-            for j in range(fstart,ws.ncols)])+linesep)
+   	    fwb.write(" ".join(map(cell2str, [ws.cell(1,j) \
+            for j in range(fstart,ws.ncols)]))+linesep)
 map(file.close, (f,e,s,p))
 if fwb:
 	fwb.close()
