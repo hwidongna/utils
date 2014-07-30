@@ -4,7 +4,7 @@ from os import linesep
 import xlrd
 
 if len(sys.argv) < 5:
-    sys.stderr.write("usage: python convert-template.py xls source target sure possible [source word boundary]"+linesep)
+    sys.stderr.write("usage: python convert-template.py xls source target sure possible [source word boundary] > ids"+linesep)
     sys.exit(1)
 
 wb = xlrd.open_workbook(sys.argv[1])
@@ -26,6 +26,7 @@ def cell2str(cell):
     return c.encode("utf-8")
 
 for ws in wb.sheets():
+    sys.stdout.write(cell2str(ws.cell(0,0)).replace("ID=","")+linesep)
     malformd = False
     for j in range(fstart, ws.ncols):
         if not ws.cell(0,j).value:
