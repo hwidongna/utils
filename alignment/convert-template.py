@@ -26,6 +26,19 @@ def cell2str(cell):
     return c.encode("utf-8")
 
 for ws in wb.sheets():
+    malformd = False
+    for j in range(fstart, ws.ncols):
+        if not ws.cell(0,j).value:
+            sys.stderr.write("Malformed source @ " + ws.name + linesep)
+            malformd = True
+            break
+    for i in range(estart, ws.nrows):
+        if not ws.cell(i,0).value:
+            sys.stderr.write("Malformed target @ " + ws.name + linesep)
+            malformd = True
+            break
+    if malformd:
+        continue
     f.write(" ".join(map(cell2str, [ws.cell(0,j) \
             for j in range(fstart,ws.ncols)]))+linesep)
     e.write(" ".join(map(cell2str, [ws.cell(i,0) \

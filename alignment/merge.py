@@ -3,7 +3,7 @@ import sys, xlrd, xlwt, math, arial10
 from os import path, linesep
 
 if len(sys.argv) < 3:
-    sys.stderr.write("usage: python merge.py output xls+ < id"+linesep)
+    sys.stderr.write("usage: python merge.py output xls+"+linesep)
     sys.exit(1)
 
 istyle = xlwt.easyxf("font: color red; align: horiz left")
@@ -11,12 +11,16 @@ pstyle = xlwt.easyxf("font: color green; align: horiz center")
 sstyle = xlwt.easyxf("font: color blue; align: horiz center")
 
 out = None
+k = 0
 for wb in map(xlrd.open_workbook, sys.argv[2:]):
+    k += 1
     if out is None: # for wb.encoding
         out = xlwt.Workbook(encoding=wb.encoding)
+    if k % 10 == 0:
+        sys.stderr.write(".")
+    if k % (10*80) == 0:
+        sys.stderr.write(linesep)
     for ws in wb.sheets():
-        for i in sys.stdin:
-            break
         wsout = out.add_sheet(ws.name)
         wsout.set_panes_frozen(True) # frozen headings instead of split panes
 
@@ -28,7 +32,7 @@ for wb in map(xlrd.open_workbook, sys.argv[2:]):
                 if type(c) != type(u''):
                     c = unicode("{0}".format(c), "utf-8")
                 if row == 0 and col == 0 and not c:
-                    wsout.write(0,0, u"ID="+i.strip(), istyle)
+                    #wsout.write(0,0, u"ID="+i.strip(), istyle)
                     continue
                 if row == 0 and col > 0:
                     wsout.col(col).width = \
